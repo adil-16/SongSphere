@@ -1,28 +1,44 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "../../firebase/firebaseConfig";
 
 const SignupForm: React.FC = () => {
-  const [username, setUsername] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSignUp = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // Here, you would typically handle the sign-up logic, like sending the data to a server.
-    // After successful sign-up, navigate to the login page.
+  const handleSignup = async (e: any) => {
+    e.preventDefault();
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-    // Simulating successful sign-up for demonstration:
-    console.log('Sign up successful with:', { username, email, password });
-    navigate("/login");
+      const user = userCredential.user;
+
+      await updateProfile(user, { displayName: username });
+      console.log("User signed up successfully!");
+      navigate("/login");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
     <div className="max-w-lg mx-auto mt-10 mb-6 p-12 bg-gray-800 rounded-lg shadow-lg">
-      <h2 className="text-3xl font-bold mb-5 text-center text-white">Sign Up</h2>
-      <form onSubmit={handleSignUp}>
+      <h2 className="text-3xl font-bold mb-5 text-center text-white">
+        Sign Up
+      </h2>
+      <form onSubmit={(e) => handleSignup(e)}>
         <div className="mb-4">
-          <label htmlFor="username" className="block text-lg font-medium text-white">
+          <label
+            htmlFor="username"
+            className="block text-lg font-medium text-white"
+          >
             Username
           </label>
           <input
@@ -36,7 +52,10 @@ const SignupForm: React.FC = () => {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="email" className="block text-lg font-medium text-white">
+          <label
+            htmlFor="email"
+            className="block text-lg font-medium text-white"
+          >
             Email
           </label>
           <input
@@ -50,7 +69,10 @@ const SignupForm: React.FC = () => {
           />
         </div>
         <div className="mb-8">
-          <label htmlFor="password" className="block text-lg font-medium text-white">
+          <label
+            htmlFor="password"
+            className="block text-lg font-medium text-white"
+          >
             Password
           </label>
           <input

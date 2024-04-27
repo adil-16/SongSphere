@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Login from "../pages/userProfile/Login";
 import Signup from "../pages/userProfile/Signup";
 import Home from "../pages/Home";
-import PlaylistPage from "../components/PlaylistDetails"
+import PlaylistPage from "../components/PlaylistDetails";
 
 const PagesRoutes = () => {
   return (

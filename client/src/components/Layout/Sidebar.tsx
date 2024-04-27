@@ -47,7 +47,7 @@ const Sidebar: React.FC = () => {
     
   };
   return (
-    <div className="bg-gray-800 w-72 p-4 ">
+    <div className="bg-gray-800 h-auto w-72 p-4 ">
       <div className="mb-4">
         <p className="text-2xl text-white font-bold mb-2">Playlists</p>
         {playlists.map((playlist) => (

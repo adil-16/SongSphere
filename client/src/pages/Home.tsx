@@ -1,70 +1,40 @@
 // src/pages/Home.tsx
 
-import React from 'react';
-import Sidebar from '../components/Layout/Sidebar';
-import { Navbar } from '../components/Layout/Navbar';
-import Card from '../components/Card';
-import { MusicInfo } from '../types/musicInfo';
-import musicImage from '../assets/music.jpeg';
-import musicImage2 from '../assets/music2.jpg';
-import Footer from '../components/Layout/Footer';
-
-
-
-const musicList: MusicInfo[] = [
-  {
-    id: 1,
-    imageSrc: musicImage,
-    musicName: 'Song One',
-    artistName: 'Artist One',
-  },
-  {
-    id: 2,
-    imageSrc: musicImage2,
-    musicName: 'Song Two',
-    artistName: 'Artist Two',
-  },
-  {
-    id: 3,
-    imageSrc: musicImage,
-    musicName: 'Song Three',
-    artistName: 'Artist Three',
-  },
-  {
-    id: 4,
-    imageSrc: musicImage2,
-    musicName: 'Song Three',
-    artistName: 'Artist Three',
-  },
-  {
-    id: 5,
-    imageSrc: musicImage,
-    musicName: 'Song Three',
-    artistName: 'Artist Three',
-  },
-  {
-    id: 6,
-    imageSrc: musicImage2,
-    musicName: 'Song Three',
-    artistName: 'Artist Three',
-  },
-  {
-    id: 7,
-    imageSrc: musicImage,
-    musicName: 'Song Three',
-    artistName: 'Artist Three',
-  },
-];
+import React, { useContext } from "react";
+import Sidebar from "../components/Layout/Sidebar";
+import { Navbar } from "../components/Layout/Navbar";
+import Card from "../components/Card";
+import Footer from "../components/Layout/Footer";
+import { MusicContext } from "../context/MusicContext";
 
 const Home: React.FC = () => {
+  const musicContext = useContext(MusicContext);
+
+  if (!musicContext) {
+    return <div>Loading...</div>;
+  }
+
+  const {
+    musicList,
+    currentPage,
+    songsPerPage,
+    totalPages,
+    handlePrevPage,
+    handleNextPage,
+  } = musicContext;
+
+  const indexOfLastSong = currentPage * songsPerPage;
+  const indexOfFirstSong = indexOfLastSong - songsPerPage;
+  const currentSongs = musicList.slice(indexOfFirstSong, indexOfLastSong);
+
   return (
     <>
       <Navbar />
       <div className="flex">
         <Sidebar />
         <div className="flex-1 p-2 ml-12 mt-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2">
-            {musicList.map((music) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {currentSongs.map((music) => (
               <Card
                 key={music.id}
                 imageSrc={music.imageSrc}
@@ -75,7 +45,23 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <div className="flex justify-center my-4">
+        <button
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+          className="px-4 py-2 mr-2 bg-gray-200 rounded"
+        >
+          Prev
+        </button>
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-gray-200 rounded"
+        >
+          Next
+        </button>
+      </div>
+      <Footer />
     </>
   );
 };
