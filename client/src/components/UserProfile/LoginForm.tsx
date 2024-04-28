@@ -28,6 +28,7 @@ const LoginForm: React.FC<loginProps> = ({ accessToken }) => {
       navigate("/");
     } catch (error) {
       console.error("Error logging in:", error);
+      navigate("/login");
     }
   };
 

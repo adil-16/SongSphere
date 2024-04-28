@@ -9,24 +9,22 @@ import toast from "react-hot-toast";
 const menuLinks = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About Us" },
-  { href: "/contact", label: "Contact Us" },
+
 ];
 
 export const Navbar: React.FC = () => {
   const [toggleMenu, setToggleMenu] = useState(false);
   const [userStatus, setUserStatus] = useState(false);
   const [token, setToken] = useState("");
+  const [username, setUsername] = useState("");
   const navigate = useNavigate();
-  // const [user, setUser] = useState();
-
-  // const handleLogout = () => {
-  //   localStorage.removeItem("user-data");
-  //   setIsOpen(false);
-  //   toast.success("Logged out successfully");
-  // };
+ 
 
   useEffect(() => {
     const userToken = sessionStorage.getItem("token");
+    const username = sessionStorage.getItem("username");
+    console.log(username);
+    
     if (userToken) {
       handleUserSignin(userToken);
     }

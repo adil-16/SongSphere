@@ -16,6 +16,8 @@ const Card: React.FC<CardProps> = ({
   artistName,
   onAddToPlaylist,
 }) => {
+  const token = sessionStorage.getItem("token");
+
   return (
     <div className="w-72 rounded overflow-hidden shadow-lg relative">
       <img
@@ -26,8 +28,13 @@ const Card: React.FC<CardProps> = ({
       <button
         className="absolute top-0 right-0 m-2 text-white bg-black hover:bg-red-600 bg-opacity-50 rounded-full p-2"
         onClick={() => {
-          onAddToPlaylist({ id, imageSrc, musicName, artistName });
+          if (token) {
+            onAddToPlaylist({ id, imageSrc, musicName, artistName });
+          } else {
+            alert("Sign In first");
+          }
         }}
+       
         aria-label="Add to playlist"
       >
         <FiPlus size={20} />

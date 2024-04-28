@@ -48,7 +48,7 @@ const Home: React.FC = () => {
       <Navbar />
       <div className="flex">
         <Sidebar />
-        <div className="w-5/6 flex flex-col w-full">
+        <div className="w-5/6 flex flex-col ">
           <div className="flex-1">
             <div className="flex  w-full">
               <div className="flex-1 p-2 ml-12 mt-8">
