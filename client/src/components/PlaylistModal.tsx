@@ -1,6 +1,10 @@
 // src/components/CreatePlaylistModal.tsx
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import axios from "axios";
+
+const auth = getAuth();
 
 interface CreatePlaylistModalProps {
   isOpen: boolean;
@@ -8,20 +12,40 @@ interface CreatePlaylistModalProps {
   onCreate: (title: string, description: string) => void;
 }
 
-const CreatePlaylistModal: React.FC<CreatePlaylistModalProps> = ({ isOpen, onClose, onCreate }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+const CreatePlaylistModal: React.FC<CreatePlaylistModalProps> = ({
+  isOpen,
+  onClose,
+  onCreate,
+}) => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [showToast, setShowToast] = useState(false);
 
   const handleCreate = () => {
     onCreate(title, description);
-    setTitle('');
-    setDescription('');
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        console.log("User is signed in:", user.uid);
+        const response = await axios.post(
+          "http://localhost:4000/api/playlist/create",
+          {
+            userId: user.uid,
+            title: title,
+            description: description,
+          }
+        );
+        console.log(response);
+      } else {
+        console.log("No user is signed in.");
+      }
+    });
+    setTitle("");
+    setDescription("");
     setShowToast(true);
     onClose();
     setTimeout(() => {
       setShowToast(false);
-    }, 3000)
+    }, 3000);
   };
 
   if (!isOpen && !showToast) {
@@ -44,7 +68,9 @@ const CreatePlaylistModal: React.FC<CreatePlaylistModalProps> = ({ isOpen, onClo
             >
               &times;
             </button>
-            <h2 className="text-2xl font-bold text-black text-center mb-4">Create Playlist</h2>
+            <h2 className="text-2xl font-bold text-black text-center mb-4">
+              Create Playlist
+            </h2>
             <input
               type="text"
               value={title}

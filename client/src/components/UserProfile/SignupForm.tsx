@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../firebase/firebaseConfig";
+import toast from "react-hot-toast";
 
 const SignupForm: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -21,6 +22,10 @@ const SignupForm: React.FC = () => {
       const user = userCredential.user;
 
       await updateProfile(user, { displayName: username });
+    
+      setTimeout(()=>{
+        toast.success("Signed up successfully");
+      },1000)
       console.log("User signed up successfully!");
       navigate("/login");
     } catch (err) {
@@ -29,7 +34,7 @@ const SignupForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-10 mb-6 p-12 bg-gray-800 rounded-lg shadow-lg">
+    <div className="max-w-sm m-2 mx-auto mt-10 mb-6 p-12 bg-gray-800 rounded-lg shadow-lg">
       <h2 className="text-3xl font-bold mb-5 text-center text-white">
         Sign Up
       </h2>

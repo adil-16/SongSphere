@@ -2,16 +2,29 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase/firebaseConfig";
+import toast from "react-hot-toast";
 
-const LoginForm: React.FC = () => {
+type loginProps = {
+  accessToken: string;
+};
+
+const LoginForm: React.FC<loginProps> = ({ accessToken }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const user = await signInWithEmailAndPassword(auth, email, password);
+      const token = user.user.accessToken;
+
+      setTimeout(()=>{
+        toast.success("Signed up successfully");
+      },1000)
+
       console.log("Logged in successfully!");
+      sessionStorage.setItem("token", token);
+      location.reload();
       navigate("/");
     } catch (error) {
       console.error("Error logging in:", error);
@@ -19,7 +32,7 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-10 mb-6 p-12 bg-gray-800 rounded-lg shadow-lg">
+    <div className="max-w-sm mx-auto mt-10 mb-6 p-12 bg-gray-800 rounded-lg shadow-lg">
       <h2 className="text-3xl font-bold mb-5 text-center text-white">Login</h2>
       <form>
         <div className="mb-4">

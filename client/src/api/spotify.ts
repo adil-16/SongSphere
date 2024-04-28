@@ -7,7 +7,7 @@ const fetchAllSongs = async (artist: any) => {
                 q: `${artist}`
             },
             headers: {
-                'Authorization': `Bearer IopVOXfuiOVx9re-Ml7xonqIcYSkTmBCm1SYXFadMtc7L2jFTflliMvLPv2xrK03`
+                'Authorization': `Bearer umt45Z7Zu8K6-PjUj_vfNnMKW1mFOPorS-fMmzjzlqycH7NtuJcm9kffopRQPUUs`
             }
         });
 
