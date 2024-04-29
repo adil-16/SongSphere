@@ -39,10 +39,52 @@ exports.deletePlaylist = async (req, res) => {
   res.status(200).send("Playlist deleted successfully");
 };
 
+// exports.addSongToPlaylist = async (req, res) => {
+//   try {
+//     const { userId, playlistId, songId, imageSrc, musicName, artistName } =
+//       req.body;
+//     const playlistRef = db
+//       .collection("users")
+//       .doc(userId)
+//       .collection("playlists")
+//       .doc(playlistId);
+//     const playlistDoc = await playlistRef.get();
+
+//     if (!playlistDoc.exists) {
+//       return res.status(404).send("Playlist not found");
+//     }
+
+//     const playlistData = playlistDoc.data();
+//     const currentSongs = playlistData.songs || [];
+//     const song = {
+//       songId: songId,
+//       imageSrc: imageSrc,
+//       musicName: musicName,
+//       artistName: artistName,
+//     };
+//     const updatedSongs = [...currentSongs, song];
+//     await playlistRef.update({
+//       songs: updatedSongs,
+//     });
+
+//     console.log("Playlist songs updated successfully!");
+//     return res.status(200).send("Song added to playlist successfully");
+//   } catch (error) {
+//     console.error("Error adding song to playlist:", error);
+//     return res.status(500).send("Internal server error");
+//   }
+// };
+
 exports.addSongToPlaylist = async (req, res) => {
   try {
-    const { userId, playlistId, songId, imageSrc, musicName, artistName } =
-      req.body;
+    const { userId, playlistId } = req.params;
+
+    
+    const { songId, imageSrc, musicName, artistName } = req.body;
+
+    if (!songId || !imageSrc || !musicName || !artistName) {
+      return res.status(400).send("Missing required song details");
+    }
     const playlistRef = db
       .collection("users")
       .doc(userId)
@@ -163,33 +205,33 @@ exports.getAllPlaylists = async (req, res) => {
   }
 };
 
-exports.updatePlaylist = async (req, res) => {
-  try {
-    const { userId, playlistId } = req.params;
-    const { title, description, songs } = req.body;
+// exports.updatePlaylist = async (req, res) => {
+//   try {
+//     const { userId, playlistId } = req.params;
+//     const { title, description, songs } = req.body;
 
-    const playlistRef = db
-      .collection("users")
-      .doc(userId)
-      .collection("playlists")
-      .doc(playlistId);
+//     const playlistRef = db
+//       .collection("users")
+//       .doc(userId)
+//       .collection("playlists")
+//       .doc(playlistId);
 
-    const playlistDoc = await playlistRef.get();
+//     const playlistDoc = await playlistRef.get();
 
-    if (!playlistDoc.exists) {
-      return res.status(404).send("Playlist not found");
-    }
+//     if (!playlistDoc.exists) {
+//       return res.status(404).send("Playlist not found");
+//     }
 
-    await playlistRef.update({
-      title: title || playlistDoc.data().title,
-      description: description || playlistDoc.data().description,
-      songs: songs || playlistDoc.data().songs,
-    });
+//     await playlistRef.update({
+//       title: title || playlistDoc.data().title,
+//       description: description || playlistDoc.data().description,
+//       songs: songs || playlistDoc.data().songs,
+//     });
 
-    console.log("Playlist updated successfully!");
-    return res.status(200).send("Playlist updated successfully");
-  } catch (error) {
-    console.error("Error updating playlist:", error);
-    return res.status(500).send("Internal server error");
-  }
-};
+//     console.log("Playlist updated successfully!");
+//     return res.status(200).send("Playlist updated successfully");
+//   } catch (error) {
+//     console.error("Error updating playlist:", error);
+//     return res.status(500).send("Internal server error");
+//   }
+// };

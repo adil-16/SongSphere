@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import axios from "axios";
+import axios, {AxiosError} from "axios";
 
 const auth = getAuth();
 
@@ -20,33 +20,47 @@ const CreatePlaylistModal: React.FC<CreatePlaylistModalProps> = ({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [showToast, setShowToast] = useState(false);
-
-  const handleCreate = () => {
+  
+  const handleCreate = async () => {
     onCreate(title, description);
+
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         console.log("User is signed in:", user.uid);
-        const response = await axios.post(
-          "http://localhost:4000/api/playlist/create",
-          {
-            userId: user.uid,
-            title: title,
-            description: description,
+        try {
+          const response = await axios.post(
+            "http://localhost:4000/api/playlist/create",
+            {
+              userId: user.uid,
+              title: title,
+              description: description,
+            }
+          );
+          console.log("Playlist created successfully:", response.data);
+          alert("Playlist created successfully");
+          location.reload(); 
+
+        } catch (error) {
+          const axiosError = error as AxiosError;
+          console.error('Error creating playlist:', axiosError);
+
+          if (!axiosError.response) {
+            alert('Cannot connect to the server. Please ensure the server is running.');
+          } else {
+           
+            alert('Error: ' + (error || axiosError.message));
           }
-        );
-        console.log(response);
+        }
       } else {
         console.log("No user is signed in.");
       }
     });
+
     setTitle("");
     setDescription("");
-    setShowToast(true);
-    onClose();
-    setTimeout(() => {
-      setShowToast(false);
-    }, 3000);
-  };
+    onClose(); 
+};
+
 
   if (!isOpen && !showToast) {
     return null;

@@ -16,14 +16,14 @@ const auth = getAuth();
 const Sidebar: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { playlists, setCurrentPlaylist } = usePlaylistContext();
-  const [isSidebarVisible, setIsSidebarVisible] = useState(true); // State to control sidebar visibility
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true); 
 
   const token = sessionStorage.getItem("token");
 
   const handleCreatePlaylist = (title: string, description: string) => {
     console.log("Creating playlist:", title, description);
-    toast.success("Created Playlist Successfully");
-    location.reload();
+    // toast.success("Created Playlist Successfully");
+    // location.reload();
   };
   const deletePlaylist = async (playlistId: string) => {
     onAuthStateChanged(auth, async (user) => {
@@ -35,7 +35,7 @@ const Sidebar: React.FC = () => {
           console.log(response);
           toast.success("Playlist deleted successfully");
           if (response.status === 200) {
-           
+            alert("Playlist deleted successfully");
             location.reload();
           } else {
             throw new Error("Failed to delete playlist");
@@ -52,14 +52,14 @@ const Sidebar: React.FC = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 1060) {
-        setIsSidebarVisible(false); // Auto-hide sidebar on small screens
+        setIsSidebarVisible(false); 
       } else {
-        setIsSidebarVisible(true); // Always visible on larger screens
+        setIsSidebarVisible(true); 
       }
     };
 
     window.addEventListener("resize", handleResize);
-    handleResize(); // Call at mount to set initial state
+    handleResize(); 
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);

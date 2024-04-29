@@ -33,20 +33,21 @@ const CreatePlaylistModal: React.FC<CreatePlaylistModalProps> = ({
 
         selectedPlaylists.map(async (playlistId) => {
           const songData = {
-            userId: user.uid,
-            playlistId: playlistId,
+            // userId: user.uid,
+            // playlistId: playlistId,
             songId: data.id,
             imageSrc: data.imageSrc,
             musicName: data.musicName,
             artistName: data.artistName,
           };
           try {
-            const response = await axios.post(
-              `http://localhost:4000/api/playlist/addsong`,
+            const response = await axios.put(
+              `http://localhost:4000/api/playlist/addsong/${user.uid}/${playlistId}`,
               songData
             );
             if (response.status === 200) {
-              toast.success("Pl successfully");
+              
+              // alert("Song added to Playlist successfully");
               location.reload();
             } else {
               throw new Error("Failed to delete playlist");
