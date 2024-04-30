@@ -16,7 +16,7 @@ const auth = getAuth();
 const Sidebar: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { playlists, setCurrentPlaylist } = usePlaylistContext();
-  const [isSidebarVisible, setIsSidebarVisible] = useState(true); 
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
   const token = sessionStorage.getItem("token");
 
@@ -33,10 +33,12 @@ const Sidebar: React.FC = () => {
             `http://localhost:4000/api/playlist/delete/${user.uid}/${playlistId}`
           );
           console.log(response);
-          toast.success("Playlist deleted successfully");
+
           if (response.status === 200) {
-            alert("Playlist deleted successfully");
-            location.reload();
+            toast.success("Playlist deleted successfully");
+            setTimeout(() => {
+              location.reload();
+            }, 1000);
           } else {
             throw new Error("Failed to delete playlist");
           }
@@ -52,14 +54,14 @@ const Sidebar: React.FC = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 1060) {
-        setIsSidebarVisible(false); 
+        setIsSidebarVisible(false);
       } else {
-        setIsSidebarVisible(true); 
+        setIsSidebarVisible(true);
       }
     };
 
     window.addEventListener("resize", handleResize);
-    handleResize(); 
+    handleResize();
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -133,7 +135,7 @@ const Sidebar: React.FC = () => {
             >
               <CiSquarePlus className="text-3xl mr-2 text-white" />
               <h1>Create New Playlist</h1>
-              </button>
+            </button>
             <PlaylistModal
               isOpen={isModalOpen}
               onClose={() => setIsModalOpen(false)}

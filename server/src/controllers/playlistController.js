@@ -98,12 +98,19 @@ exports.addSongToPlaylist = async (req, res) => {
 
     const playlistData = playlistDoc.data();
     const currentSongs = playlistData.songs || [];
+    const songExists = currentSongs.some(song => song.songId === songId);
+    if (songExists) {
+      console.log("Song already exists in the playlist");
+      return res.status(409).send("Song already exists in the playlist");  
+    }
+else{
     const song = {
       songId: songId,
       imageSrc: imageSrc,
       musicName: musicName,
       artistName: artistName,
     };
+    
     const updatedSongs = [...currentSongs, song];
     await playlistRef.update({
       songs: updatedSongs,
@@ -111,6 +118,7 @@ exports.addSongToPlaylist = async (req, res) => {
 
     console.log("Playlist songs updated successfully!");
     return res.status(200).send("Song added to playlist successfully");
+  }
   } catch (error) {
     console.error("Error adding song to playlist:", error);
     return res.status(500).send("Internal server error");

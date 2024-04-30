@@ -30,8 +30,9 @@ const Song: React.FC<SongProps> = ({
 
       if (response.status === 200) {
         toast.success("Song deleted successfully");
-        alert("Song deleted successfully");
-        location.reload();
+        setTimeout(() => {
+          location.reload();
+        }, 1000);
       } else {
         throw new Error("Failed to delete song");
       }

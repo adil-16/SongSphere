@@ -9,7 +9,6 @@ import toast from "react-hot-toast";
 const menuLinks = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About Us" },
-
 ];
 
 export const Navbar: React.FC = () => {
@@ -18,13 +17,12 @@ export const Navbar: React.FC = () => {
   const [token, setToken] = useState("");
   const [username, setUsername] = useState("");
   const navigate = useNavigate();
- 
 
   useEffect(() => {
     const userToken = sessionStorage.getItem("token");
     const username = sessionStorage.getItem("username");
     console.log(username);
-    
+
     if (userToken) {
       handleUserSignin(userToken);
     }
@@ -34,8 +32,9 @@ export const Navbar: React.FC = () => {
     sessionStorage.setItem("token", "");
     setToken("");
     toast.success("Logged out successfully");
-    navigate("/");
-    location.reload();
+    setTimeout(() => {
+      location.reload();
+    }, 1000);
   };
 
   const handleUserSignin = (userToken: any) => {
@@ -97,32 +96,33 @@ export const Navbar: React.FC = () => {
             {link.label}
           </Link>
         ))}
-       
-          <div className="flex justify-center">
-            {!userStatus &&
+
+        <div className="flex justify-center">
+          {!userStatus && (
             <>
               <Link
-              to="/signup"
-              className="border-white border-2 px-5 rounded-lg py-1 mt-4 mx-2 hover:bg-white hover:text-red-600 transition-colors duration-200"
-            >
-              Signup            </Link>
-            <Link
-              to="/login"
-              className="border-white border-2 px-5 rounded-lg py-1 mt-4 mx-2 hover:bg-white hover:text-red-600 transition-colors duration-200"
-            >
-              Login
-            </Link>
+                to="/signup"
+                className="border-white border-2 px-5 rounded-lg py-1 mt-4 mx-2 hover:bg-white hover:text-red-600 transition-colors duration-200"
+              >
+                Signup{" "}
+              </Link>
+              <Link
+                to="/login"
+                className="border-white border-2 px-5 rounded-lg py-1 mt-4 mx-2 hover:bg-white hover:text-red-600 transition-colors duration-200"
+              >
+                Login
+              </Link>
             </>
-            }
-            {userStatus &&
+          )}
+          {userStatus && (
             <button
               onClick={handleLogout}
               className="border-white border-2 px-3 py-1 mt-4 mx-2 hover:bg-white hover:text-red-600 transition-colors duration-200"
             >
               Log Out
-            </button>}
-          </div>
-       
+            </button>
+          )}
+        </div>
       </div>
       <button onClick={() => setToggleMenu(!toggleMenu)} className="lg:hidden">
         {toggleMenu ? (

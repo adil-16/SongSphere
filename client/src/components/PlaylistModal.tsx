@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import axios, {AxiosError} from "axios";
+import axios, { AxiosError } from "axios";
+import toast from "react-hot-toast";
 
 const auth = getAuth();
 
@@ -20,7 +21,7 @@ const CreatePlaylistModal: React.FC<CreatePlaylistModalProps> = ({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [showToast, setShowToast] = useState(false);
-  
+
   const handleCreate = async () => {
     onCreate(title, description);
 
@@ -37,18 +38,20 @@ const CreatePlaylistModal: React.FC<CreatePlaylistModalProps> = ({
             }
           );
           console.log("Playlist created successfully:", response.data);
-          alert("Playlist created successfully");
-          location.reload(); 
-
+          toast.success("Playlist created successfully");
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
         } catch (error) {
           const axiosError = error as AxiosError;
-          console.error('Error creating playlist:', axiosError);
+          console.error("Error creating playlist:", axiosError);
 
           if (!axiosError.response) {
-            alert('Cannot connect to the server. Please ensure the server is running.');
+            toast.error(
+              "Cannot connect to the server. Please ensure the server is running."
+            );
           } else {
-           
-            alert('Error: ' + (error || axiosError.message));
+            toast.error("Error: " + (error || axiosError.message));
           }
         }
       } else {
@@ -58,9 +61,8 @@ const CreatePlaylistModal: React.FC<CreatePlaylistModalProps> = ({
 
     setTitle("");
     setDescription("");
-    onClose(); 
-};
-
+    onClose();
+  };
 
   if (!isOpen && !showToast) {
     return null;

@@ -25,16 +25,15 @@ const CreatePlaylistModal: React.FC<CreatePlaylistModalProps> = ({
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
 
   const handleCreate = () => {
-    let data = song;
+    const data = song;
     console.log(data);
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("asd");
 
-        selectedPlaylists.map(async (playlistId) => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        console.log("User is signed in:", user.uid);
+
+        const promises = selectedPlaylists.map(async (playlistId) => {
           const songData = {
-            // userId: user.uid,
-            // playlistId: playlistId,
             songId: data.id,
             imageSrc: data.imageSrc,
             musicName: data.musicName,
@@ -46,24 +45,32 @@ const CreatePlaylistModal: React.FC<CreatePlaylistModalProps> = ({
               songData
             );
             if (response.status === 200) {
-              
-              // alert("Song added to Playlist successfully");
-              location.reload();
+              toast.success("Song added to Playlist successfully");
+            } else if (response.status === 409) {
+              toast.error("Song already in the playlist");
             } else {
-              throw new Error("Failed to delete playlist");
+              throw new Error("Unexpected response from the server");
             }
           } catch (error) {
-            toast.error("Error deleting playlist");
-            console.error("Error deleting playlist:", error);
+            if (
+              axios.isAxiosError(error) &&
+              error.response &&
+              error.response.status === 409
+            ) {
+              toast.error("Song already in the playlist");
+            } else {
+              toast.error("Error adding song to playlist");
+              console.error("Error adding song to playlist:", error);
+            }
           }
         });
+
+        await Promise.all(promises);
       } else {
         console.log("No user is signed in.");
       }
     });
-    onClose();
-
-    setShowToast(true);
+    // setShowToast(true)
     onClose();
     setTimeout(() => {
       setShowToast(false);
@@ -127,8 +134,13 @@ const CreatePlaylistModal: React.FC<CreatePlaylistModalProps> = ({
             )}
             <div className="flex justify-center">
               <button
-                className="bg-red-600 text-white hover:bg-red-800 hover:text-white font-bold py-2 px-4 rounded"
+                className={`bg-red-600 text-white font-bold py-2 px-4 rounded hover:bg-red-800 hover:text-white ${
+                  selectedPlaylists.length === 0
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
                 onClick={handleCreate}
+                disabled={selectedPlaylists.length === 0}
               >
                 Add Song
               </button>

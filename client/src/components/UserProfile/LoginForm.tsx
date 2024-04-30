@@ -24,10 +24,10 @@ const LoginForm: React.FC<loginProps> = ({ accessToken }) => {
 
       console.log("Logged in successfully!");
       sessionStorage.setItem("token", token);
-      location.reload();
       navigate("/");
     } catch (error) {
       console.error("Error logging in:", error);
+      toast.error("Error logging in");
       navigate("/login");
     }
   };
