@@ -8,7 +8,6 @@ import toast from "react-hot-toast";
 
 const menuLinks = [
   { href: "/", label: "Home" },
-  { href: "/about", label: "About Us" },
 ];
 
 export const Navbar: React.FC = () => {
