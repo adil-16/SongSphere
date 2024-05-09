@@ -6,9 +6,15 @@ import toast from "react-hot-toast";
 
 type loginProps = {
   accessToken: string;
+  isLoggedIn: boolean;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const LoginForm: React.FC<loginProps> = ({ accessToken }) => {
+const LoginForm: React.FC<loginProps> = ({
+  accessToken,
+  isLoggedIn,
+  setIsLoggedIn,
+}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -17,14 +23,12 @@ const LoginForm: React.FC<loginProps> = ({ accessToken }) => {
     try {
       const user = await signInWithEmailAndPassword(auth, email, password);
       const token = user.user.accessToken;
-
-      setTimeout(()=>{
-        toast.success("Signed up successfully");
-      },1000)
-
       console.log("Logged in successfully!");
       sessionStorage.setItem("token", token);
-      location.reload();
+      toast.success("Signed up successfully");
+      setIsLoggedIn(true);
+      console.log(isLoggedIn);
+      // location.reload();
       navigate("/");
     } catch (error) {
       console.error("Error logging in:", error);

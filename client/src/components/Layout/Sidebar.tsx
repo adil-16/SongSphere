@@ -13,9 +13,14 @@ import { TfiAlignJustify } from "react-icons/tfi";
 
 const auth = getAuth();
 
-const Sidebar: React.FC = () => {
+type sidebarprops = {
+  isLoggedIn: boolean;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Sidebar: React.FC<sidebarprops> = ({isLoggedIn, setIsLoggedIn}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { playlists, setCurrentPlaylist } = usePlaylistContext();
+  const { playlists, setPlaylists, setCurrentPlaylist } = usePlaylistContext();
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
   const token = sessionStorage.getItem("token");
@@ -51,6 +56,15 @@ const Sidebar: React.FC = () => {
       }
     });
   };
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      // Clear playlists when user logs out
+      setPlaylists([]);
+      setCurrentPlaylist(null);
+    }
+  }, [isLoggedIn, setPlaylists, setCurrentPlaylist]);
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 1060) {
@@ -65,6 +79,10 @@ const Sidebar: React.FC = () => {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  console.log(isLoggedIn);
+
+  
 
   return (
     <div>
@@ -82,7 +100,7 @@ const Sidebar: React.FC = () => {
             ? "fixed inset-y-0 left-0 z-30 w-64 sm:w-1/2 md:w-1/2 xl-w-full lg:w-full z-100 shadow-md"
             : "hidden"
         } ${
-          window.innerWidth > 1060 ? "relative" : "lg:w-1/4" // Change lg:w-full to lg:w-1/2 if window width is less than or equal to 1060
+          window.innerWidth > 1060 ? "relative" : "lg:w-1/4" 
         }`}
       >
         <div className="bg-gray-800 min-h-screen w-full z-100 p-4 ">
@@ -95,9 +113,8 @@ const Sidebar: React.FC = () => {
                 </button>
               )}
             </div>
-            {playlists.length === 0 ? (
-              <p className="text-white text-md">No Playlists</p>
-            ) : (
+            
+            {playlists.length > 0 ? (
               playlists.map((playlist) => (
                 <div
                   key={playlist.id}
@@ -106,9 +123,9 @@ const Sidebar: React.FC = () => {
                   <Link
                     to={`/playlists/${playlist.id}`}
                     className={`block text-left text-lg rounded p-2 mb-2 w-full ${
-                      useLocation().pathname === `/playlists/${playlist.id}`
+                      location.pathname === `/playlists/${playlist.id}`
                         ? "bg-red-600 text-white"
-                        : " text-white"
+                        : "text-white"
                     }`}
                     onClick={() => setCurrentPlaylist(playlist)}
                   >
@@ -116,20 +133,25 @@ const Sidebar: React.FC = () => {
                   </Link>
                   <FaTrash
                     className="text-white hover:text-red-500 cursor-pointer transition-colors duration-300"
-                    onClick={() => deletePlaylist(playlist.id)}
+                    onClick={() => {
+                      // Assuming a delete function exists
+                      deletePlaylist(playlist.id);
+                    }}
                     size={20}
                   />
                 </div>
               ))
+            ) : (
+              <p className="text-white text-md">No Playlists</p>
             )}
             <hr className="my-4 border-gray-700" />
             <button
-              className="text-white flex flex-row items-center md-text-lg lg-text-lg text-sm font-bold rounded  py-2 mb-1 w-full hover:bg-gray-700 "
+              className="text-white flex flex-row items-center md-text-lg lg-text-lg text-sm font-bold rounded py-2 mb-1 w-full hover:bg-gray-700 "
               onClick={() => {
-                if (token) {
+                if (isLoggedIn) {
                   setIsModalOpen(true);
                 } else {
-                  alert("Sign In to Create a Playlist");
+                  toast.error("You must be logged in to create playlists.");
                 }
               }}
             >

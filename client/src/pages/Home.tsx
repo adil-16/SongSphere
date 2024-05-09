@@ -8,7 +8,12 @@ import Footer from "../components/Layout/Footer";
 import { MusicContext } from "../context/MusicContext";
 import CreatePlaylistModal from "../components/PlaylistAddModal";
 
-const Home: React.FC = () => {
+type homeprops = {
+  isLoggedIn: boolean;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Home: React.FC<homeprops> = ({isLoggedIn, setIsLoggedIn}) => {
   const musicContext = useContext(MusicContext);
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedSong, setSelectedSong] = useState(null);
@@ -45,9 +50,9 @@ const Home: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen">
-      <Navbar />
+      <Navbar isLoggedIn= {isLoggedIn} setIsLoggedIn= {setIsLoggedIn} />
       <div className="flex">
-        <Sidebar />
+        <Sidebar isLoggedIn= {isLoggedIn} setIsLoggedIn= {setIsLoggedIn} />
         <div className="w-5/6 flex flex-col ">
           <div className="flex-1">
             <div className="flex  w-full">

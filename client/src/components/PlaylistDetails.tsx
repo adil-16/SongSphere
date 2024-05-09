@@ -10,7 +10,11 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import axios from "axios";
 
 const auth = getAuth();
-const PlaylistDetail: React.FC = () => {
+type playlistprops ={
+  isLoggedIn: boolean;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+}
+const PlaylistDetail: React.FC<playlistprops> = ({isLoggedIn, setIsLoggedIn}) => {
   var { currentPlaylist, playlists } = usePlaylistContext();
   const [song, setData] = useState();
   const [uid, setUid] = useState("");
@@ -51,10 +55,10 @@ const PlaylistDetail: React.FC = () => {
 
     return (
       <>
-      <Navbar/>
+      <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
       <div className="flex h-screen">
         
-        <Sidebar />
+        <Sidebar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
         <div className="flex-1 p-8">
           <p>
             Loading playlist... If no playlist loads, please select a playlist
@@ -68,9 +72,10 @@ const PlaylistDetail: React.FC = () => {
 
   return (
     <>
-      <Navbar />
+           <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
       <div className="flex h-screen">
-        <Sidebar />
+      <Sidebar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
+
         <div className="flex-1 p-4 ">
           <h2 className="flex justify-center text-3xl font-bold mb-8">
             {song.title}

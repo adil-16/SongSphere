@@ -2,11 +2,17 @@ import { Navbar } from "../../components/Layout/Navbar";
 import LoginForm from "../../components/UserProfile/LoginForm";
 // import Footer from "../../components/Layout/Footer";
 
-const Login = () => {
+
+type loginprops={
+  isLoggedIn: boolean;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+}
+const Login: React.FC<loginprops> = ({isLoggedIn, setIsLoggedIn}) => {
+  
   return (
     <>
     <Navbar/>
-    <LoginForm/>
+    <LoginForm isLoggedIn= {isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
     {/* <Footer/> */}
     </>
   )

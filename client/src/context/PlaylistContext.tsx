@@ -1,3 +1,4 @@
+// PlaylistProvider
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { Playlist } from "../types/playlist";
@@ -19,36 +20,31 @@ const PlaylistContext = createContext<PlaylistContextType>({
   setPlaylists: () => {},
 });
 
-export const PlaylistProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const PlaylistProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentPlaylist, setCurrentPlaylist] = useState<Playlist | null>(null);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const [token, setToken] = useState("");
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    if (token) {
-      setToken(token);
-      onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          const response = await axios.get(
-            `http://localhost:4000/api/playlist/all-user-playlists/${user.uid}`
-          );
-          if (response.status === 200) {
-            setPlaylists(response.data);
-          } else {
-            console.error("Failed to fetch playlists:", response.statusText);
-          }
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const response = await axios.get(`http://localhost:4000/api/playlist/all-user-playlists/${user.uid}`);
+        if (response.status === 200) {
+          setPlaylists(response.data);
+        } else {
+          console.error("Failed to fetch playlists:", response.statusText);
         }
-      });
-    }
+      } else {
+        // Clear playlists when there is no user logged in
+        setPlaylists([]);
+        setCurrentPlaylist(null);
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup subscription on unmount
   }, []);
 
   return (
-    <PlaylistContext.Provider
-      value={{ currentPlaylist, playlists, setCurrentPlaylist, setPlaylists }}
-    >
+    <PlaylistContext.Provider value={{ currentPlaylist, playlists, setCurrentPlaylist, setPlaylists }}>
       {children}
     </PlaylistContext.Provider>
   );

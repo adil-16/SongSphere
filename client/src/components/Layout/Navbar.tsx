@@ -6,11 +6,17 @@ import { X, CircleUserRound } from "lucide-react";
 import src from "../../assets/logo.png";
 import toast from "react-hot-toast";
 
-const menuLinks = [
-  { href: "/", label: "Home" },
-];
+const menuLinks = [{ href: "/", label: "Home" }];
 
-export const Navbar: React.FC = () => {
+type navbarprops = {
+  isLoggedIn: boolean;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export const Navbar: React.FC<navbarprops> = ({
+  isLoggedIn,
+  setIsLoggedIn,
+}) => {
   const [toggleMenu, setToggleMenu] = useState(false);
   const [userStatus, setUserStatus] = useState(false);
   const [token, setToken] = useState("");
@@ -28,12 +34,11 @@ export const Navbar: React.FC = () => {
   }, [token]);
 
   const handleLogout = () => {
-    sessionStorage.setItem("token", "");
-    setToken("");
+    setIsLoggedIn(false); // Assuming setIsLoggedIn updates your state context or local component state
+    sessionStorage.removeItem("token");
     toast.success("Logged out successfully");
-    setTimeout(() => {
-      location.reload();
-    }, 1000);
+    // Navigate to home or login page as needed
+    navigate("/");
   };
 
   const handleUserSignin = (userToken: any) => {
@@ -59,7 +64,7 @@ export const Navbar: React.FC = () => {
       </div>
       <div className="flex-grow"></div>
       <div className="hidden lg:flex gap-4 lg:gap-6 font-semibold text-xl">
-        {!userStatus ? (
+        {!isLoggedIn ? (
           <>
             <Link
               to="/signup"
@@ -97,7 +102,7 @@ export const Navbar: React.FC = () => {
         ))}
 
         <div className="flex justify-center">
-          {!userStatus && (
+          {!isLoggedIn && (
             <>
               <Link
                 to="/signup"
@@ -113,7 +118,7 @@ export const Navbar: React.FC = () => {
               </Link>
             </>
           )}
-          {userStatus && (
+          {isLoggedIn && (
             <button
               onClick={handleLogout}
               className="border-white border-2 px-3 py-1 mt-4 mx-2 hover:bg-white hover:text-red-600 transition-colors duration-200"
