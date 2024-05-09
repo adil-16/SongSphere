@@ -10,3 +10,5 @@ admin.initializeApp({
 const db = admin.firestore(); 
 
 module.exports = { db, admin };
+
+// use your own serviceKey, above credentials are expired, you can get one from firebase
